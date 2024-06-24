@@ -15,6 +15,7 @@ urlpatterns = [
     path('registrar/diente/', RegistrarDiente.as_view()),
     path('registrar/doc_extra/', DocExtra.as_view()),
     
+    path('consultar/pacientes/parametros/', BuscarPacientesPorParametros.as_view()),
     path('consultar/pacientes/', GetPacientes.as_view()),
     path('consultar/pacientes/<id_paciente>/', GetPaciente.as_view()),
     path('consultar/afecciones/<id_paciente>/', GetAfecciones.as_view()),

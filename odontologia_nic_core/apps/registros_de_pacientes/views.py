@@ -23,6 +23,7 @@ from .serializer import (
 from apps.utils.math.calculos import calcular_edad
 
 from apps.utils.minis_f import str_a_bool
+from apps.utils.globales import KEYS_PRINCIPALES
 
 """
 posts
@@ -315,7 +316,7 @@ class RegistrarTratamientoActualizado(APIView):
         nuevo_tratamiento_actualizado = TratamientoActualizado(
             tratamiento = tratamiento,
             descripcion=descripcion,
-            realizado = realizado,
+            realizado = True,
         )
 
         if data.get('fecha'):
@@ -390,6 +391,28 @@ class DocExtra(APIView):
 """
     gets
 """
+#edad__gte
+#edad__lte
+
+class BuscarPacientesPorParametros(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        #data = request.data
+        
+        pacientes = Paciente.objects.filter(**kwargs)
+
+        if pacientes.exists():
+
+            paginator = LargeSetPagination()
+
+            results = paginator.paginate_queryset(pacientes, request)
+            serializer = PacienteSerializer(results, many=True)
+            
+            return paginator.get_paginated_response({'pacientes':serializer.data})
+        else:
+            return Response({'error':'no hay pacientes que encajen con los filtros'}, status=status.HTTP_404_NOT_FOUND)
+
+        
 
 class GetPacientes(APIView):
     permission_classes = [IsAuthenticated]

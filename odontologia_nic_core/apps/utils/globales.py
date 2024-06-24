@@ -27,3 +27,5 @@ ESTADOS_DE_AFECCION = (
     ('irrebersible con intento de tratamiento','irrebersible con intento de tratamiento'),
     ('irrebersible sin intento de tratamiento','irrebersible sin intento de tratamiento'),
 )
+
+KEYS_PRINCIPALES = []
