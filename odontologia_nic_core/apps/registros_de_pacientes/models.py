@@ -9,7 +9,8 @@ from apps.utils.PathDirs import (path_dir_doc, path_dir_models, path_dir_diente_
 
 from apps.utils.globales import (GENEROS, NACIONALIDADES, 
                                  NUMERACION_DE_DIENTES, ESTADOS_DE_AFECCION)
-
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 import datetime
 
 class Procedimientos(models.Model):
@@ -76,6 +77,34 @@ class Paciente(models.Model):
 
     def __str__(self):
         return f'{self.apellido_paterno} {self.apellido_materno} {self.nombre} {self.id_paciente}'
+
+    def get_documento(self):
+        paciente = get_object_or_404(Paciente, id_paciente = self.id_paciente)
+
+        try:
+            documento = get_object_or_404(DocumentoExtraDelPaciente, paciente=paciente)
+            if documento:
+                url_doc = documento.get_documento()
+
+                return url_doc
+            
+        except Http404 as e:
+            return ''
+        
+    def get_modelo_boca_3d(self):
+        paciente = get_object_or_404(Paciente, id_paciente=self.id_paciente)
+
+        try:
+            boca_3d_queryset = Modelos3DBoca.objects.filter(paciente=paciente)
+            if boca_3d_queryset.exists():
+                # Selecciona el primer objeto (puedes ajustar esto según tus necesidades)
+                modelo_3d = boca_3d_queryset.last().get_archivo_3d()
+                return modelo_3d
+            else:
+                return ''
+        except Http404 as e:
+            return ''
+
 
     def save(self, *args, **kwargs):
         pacientes = Paciente.objects.all()

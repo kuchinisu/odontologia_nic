@@ -4,7 +4,7 @@ from .models import (Procedimientos, Tratamientos, Aparato, Unidad, Paciente,
                      TratamientoActualizado, Diente, DocumentoExtraDelPaciente
                      )
 
-class PacienteSerializer(serializers.ModelSerializer):
+class ProcedimientosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Procedimientos
         fields = [
@@ -38,6 +38,7 @@ class UnidadSerializer(serializers.ModelSerializer):
         ]
 
 class PacienteSerializer(serializers.ModelSerializer):
+    archivo_3d = serializers.CharField(source='get_modelo_boca_3d')
     class Meta:
         model = Paciente
         fields = [
@@ -55,6 +56,7 @@ class PacienteSerializer(serializers.ModelSerializer):
             'imc',
             'aparatos',
             'id_paciente',
+            'archivo_3d',
         ]
 
 class Modelos3DSerializer(serializers.ModelSerializer):

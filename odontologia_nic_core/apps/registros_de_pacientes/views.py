@@ -396,23 +396,21 @@ class DocExtra(APIView):
 
 class BuscarPacientesPorParametros(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
-        #data = request.data
-        
-        pacientes = Paciente.objects.filter(**kwargs)
+        filtered_kwargs = {k: v for k, v in request.query_params.items() if v}
+
+        pacientes = Paciente.objects.filter(**filtered_kwargs)
 
         if pacientes.exists():
-
             paginator = LargeSetPagination()
-
             results = paginator.paginate_queryset(pacientes, request)
             serializer = PacienteSerializer(results, many=True)
-            
-            return paginator.get_paginated_response({'pacientes':serializer.data})
+            return paginator.get_paginated_response({'pacientes': serializer.data})
         else:
-            return Response({'error':'no hay pacientes que encajen con los filtros'}, status=status.HTTP_404_NOT_FOUND)
+            print('no')
+            return Response({'error': 'no hay pacientes que encajen con los filtros'}, status=status.HTTP_404_NOT_FOUND)
 
-        
 
 class GetPacientes(APIView):
     permission_classes = [IsAuthenticated]
